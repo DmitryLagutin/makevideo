@@ -2,6 +2,11 @@ import cv2
 import glob
 from PIL import Image
 import numpy as np
+import moviepy.editor as mpe
+from moviepy.video.VideoClip import TextClip
+from moviepy.video.io.VideoFileClip import VideoFileClip
+from helper import *
+import os
 
 
 def get_file(fon_path, watermark_path, res_path):
@@ -23,24 +28,29 @@ def get_file(fon_path, watermark_path, res_path):
     fon1.save(res_path)
 
 
-list_x = ['img/1.jpg', 'img/2.jpg', 'img/3.jpg', 'img/4.jpg']
-x = 1
-for i in list_x:
-    get_file('fon.jpg', i, 'res/{0}.jpg'.format(x))
-    x = x + 1
+basic_directory = 'img'
+result_directory = 'res'
 
-img = cv2.imread('res/1.jpg')
-height, width, channels = img.shape
-print(height, width, channels)
+basic_files = os.listdir(basic_directory)
+result_files = os.listdir(result_directory)
+for i in basic_files:
+    get_file('fon/fon.jpg', '{0}/{1}'.format(basic_directory, i), '{0}/{1}'.format(result_directory, i))
 
-# # fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-# # out = cv2.VideoWriter('video.mp4v', fourcc, 120.0, (width, height))
-#
-#
-out = cv2.VideoWriter("video.avi", cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), 1.0, (width, height))  # создаем видео
-out.write(cv2.imread('res/1.jpg'))  # добавляем картинки
-out.write(cv2.imread('res/1.jpg'))
-out.write(cv2.imread('res/1.jpg'))
-out.write(cv2.imread('res/1.jpg'))
+height, width, channels = cv2.imread('{0}/{1}'.format(result_directory, result_files[0])).shape
+
+out = cv2.VideoWriter("video.avi", cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), float(1 / 4),
+                      (width, height))  # создаем видео
+
+for i in result_files:
+    out.write(cv2.imread('{0}/{1}'.format(result_directory, i)))
+
 out.release()  # генерируем
 cv2.destroyAllWindows()  # завершаем
+# склеиваем музыку и видео
+my_clip = mpe.VideoFileClip('video.avi')
+my_clip.write_videofile('result_video.mp4', audio='music/sunny.mp3')
+my_clip.close()
+os.remove('video.avi')
+clip = VideoFileClip("result_video.mp4").subclip(0, 15)
+clip.write_videofile("result_video.mp4")
+clip.close()
