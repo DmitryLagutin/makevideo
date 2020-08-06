@@ -23,15 +23,14 @@ def get_file(fon_path, watermark_path, res_path):
 
     im = Image.open(watermark_path)
     h, w = im.size
-    scale = width / max(h, w)
+    scale = width / h # width / max(w, h)
     im.resize((int(h * scale), int(w * scale)), Image.ANTIALIAS).save(watermark_path)
     im = Image.open(watermark_path)
     h, w = im.size
-    print(h, w)
 
     fon1 = Image.open(fon_path)
     im = Image.open(watermark_path)
-    fon1.paste(im, (0, int(width / 2.5)))
+    fon1.paste(im, (0, int(width / 3))) # fon1.paste(im, (0, int(width / 2.5)))
     fon1.save(res_path)
     fon1.close()
     im.close()
@@ -45,10 +44,12 @@ def make_res_images():
 
 def make_video():
     result_files = os.listdir(result_directory)
+    print(len(result_files), '---------')
 
     height, width, channels = cv2.imread('{0}/{1}'.format(result_directory, result_files[0])).shape
 
-    out = cv2.VideoWriter("video.avi", cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'), float(1 / 4),
+    out = cv2.VideoWriter("video.avi", cv2.VideoWriter_fourcc('M', 'J', 'P', 'G'),
+                          float(1 / (15 / int(len(result_files)))),
                           (width, height))  # создаем видео
 
     for i in result_files:
