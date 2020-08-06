@@ -23,14 +23,14 @@ def get_file(fon_path, watermark_path, res_path):
 
     im = Image.open(watermark_path)
     h, w = im.size
-    scale = width / h # width / max(w, h)
+    scale = width / h  # width / max(w, h)
     im.resize((int(h * scale), int(w * scale)), Image.ANTIALIAS).save(watermark_path)
     im = Image.open(watermark_path)
     h, w = im.size
 
     fon1 = Image.open(fon_path)
     im = Image.open(watermark_path)
-    fon1.paste(im, (0, int(width / 3))) # fon1.paste(im, (0, int(width / 2.5)))
+    fon1.paste(im, (0, int(height / 2 - h / 2)))  # fon1.paste(im, (0, int(width / 2.5))) int(width / 2.7)
     fon1.save(res_path)
     fon1.close()
     im.close()
