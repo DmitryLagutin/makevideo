@@ -42,22 +42,22 @@ def make_res_images():
         get_file('fon/fon.jpg', '{0}/{1}'.format(basic_directory, i), '{0}/{1}'.format(result_directory, i))
 
 
-def make_ticker():
+def make_ticker(fon_color, txt_color, size, size_block: tuple, text):
     result_files = os.listdir(result_directory)
     for i in result_files:
         fon = Image.open('{0}/{1}'.format(result_directory, i))
         height, width = fon.size
-        img = Image.new("RGBA", (270, 70), 'red')
+        img = Image.new("RGBA", size_block, fon_color)
         idraw = ImageDraw.Draw(img)
-        headline = ImageFont.truetype('9041.ttf', size=25)
-        text = 'https://ali.ski/Zyqnb'
-        idraw.text((10, 20), text, 'black', font=headline)
+        headline = ImageFont.truetype('9041.ttf', size=size)
+        text = text
+        idraw.text((10, 20), text, txt_color, font=headline)
         w1, h1 = idraw.textsize(text, font=headline)
         print(w1, h1)
         img.save('canvas.png')
         img = Image.open('canvas.png')
         h, w = img.size
-        fon.paste(img, (0, int(height / 2 - h / 2)))  # fon1.paste(im, (0, int(width / 2.5))) int(width / 2.7)
+        fon.paste(img, (0, int(width - width / 4)))  # fon1.paste(im, (0, int(width / 2.5))) int(width / 2.7)
         fon.save('{0}/{1}'.format(result_directory, i))
         fon.close()
         img.close()
@@ -78,8 +78,9 @@ def make_video():
     cv2.destroyAllWindows()  # завершаем
 
     my_clip = mpe.VideoFileClip('video.avi')
-    my_clip.write_videofile('res_video/result_video.mp4', audio='music/sunny.mp3')
+    my_clip.write_videofile('res_video/result_video.mp4', audio='music/sunny.mp3', codec = 'mpeg4')
+
     my_clip.close()
     clip = VideoFileClip("res_video/result_video.mp4").subclip(0, 15)
-    clip.write_videofile("res_video/result_video.mp4")
+    clip.write_videofile("res_video/result_video.mp4", codec = 'mpeg4')
     clip.close()

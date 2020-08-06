@@ -10,7 +10,11 @@ import os
 
 # создаем картинки из которых будем делать видео
 make_res_images()
-make_ticker()
+make_ticker(fon_color='red',
+            txt_color='black',
+            size_block=(270, 70),
+            size=30,
+            text='ali.ski/Zyqnb')
 # делаем видео
 make_video()
 # удаляем промежуточные видео
