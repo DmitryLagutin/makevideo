@@ -21,5 +21,5 @@ make_video()
 os.remove('video.avi')
 # удаляем картинки, из которых делали видео
 result_files = os.listdir(result_directory)
-for i in result_files:
-    os.remove('{0}/{1}'.format(result_directory, i))
+# for i in result_files:
+#     os.remove('{0}/{1}'.format(result_directory, i))

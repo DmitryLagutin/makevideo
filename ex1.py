@@ -1,39 +1,17 @@
-import numpy as np
-import cv2
-from PIL import Image, ImageDraw, ImageFont
+from moviepy.editor import *
 
-# создадим белое изображение
-# или можно считать изобрежние с помощью cv2.imread("path_to_file")
-img = np.zeros((256, 512, 3), np.uint8)
-img[:, :, :] = 255
+basic_directory = 'res'
+basic_files = os.listdir(basic_directory)
 
+img = ['{0}/{1}'.format(basic_directory, basic_files[0]),
+       '{0}/{1}'.format(basic_directory, basic_files[1]),
+       '{0}/{1}'.format(basic_directory, basic_files[2]),
+       '{0}/{1}'.format(basic_directory, basic_files[3])]
 
-# для простоты и совместимости возьмем пустое изображение из первого примера
-# Чтобы не использовать opencv, а только PIL используйте функцию Image.open()
-def put_text_pil(img: np.array, txt: str):
-    im = Image.fromarray(img)
+clips = [ImageClip(m).set_duration(2)
+         for m in img]
 
-    font_size = 24
-    font = ImageFont.truetype('9041.ttf', size=font_size)
+print(clips)
 
-    draw = ImageDraw.Draw(im)
-    # здесь узнаем размеры сгенерированного блока текста
-    w, h = draw.textsize(txt, font=font)
-
-
-    y_pos = 50
-    im = Image.fromarray(img)
-    draw = ImageDraw.Draw(im)
-
-    # теперь можно центрировать текст
-    draw.text((int((img.shape[1] - w) / 2), y_pos), txt, fill='rgb(0, 0, 0)', font=font)
-
-    img = np.asarray(im)
-
-    return img
-
-
-img = put_text_pil(img, 'Some Styled Black Text Here')
-
-cv2.imshow('Result', img)
-cv2.waitKey()
+concat_clip = concatenate_videoclips(clips, method="compose")
+concat_clip.write_videofile("test.mp4", fps=24)
